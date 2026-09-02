@@ -94,8 +94,56 @@ def get_referral(conn: sqlite3.Connection, referral_id: str) -> Referral | None:
     return _from_row(row) if row is not None else None
 
 
-def list_referrals(conn: sqlite3.Connection) -> list[Referral]:
-    rows = conn.execute("SELECT * FROM referrals ORDER BY received_at DESC").fetchall()
+def list_referrals(
+    conn: sqlite3.Connection,
+    *,
+    status: ReferralStatus | None = None,
+    source: ReferralSource | None = None,
+    urgency: Urgency | None = None,
+    q: str | None = None,
+    sort: str = "-received_at",
+    limit: int | None = None,
+    offset: int = 0,
+) -> list[Referral]:
+    where, params = _build_where(status=status, source=source, urgency=urgency, q=q)
+    direction = "DESC" if sort.startswith("-") else "ASC"
+    sql = f"SELECT * FROM referrals{where} ORDER BY received_at {direction}"
+    if limit is not None:
+        sql += " LIMIT ? OFFSET ?"
+        params = [*params, limit, offset]
+    rows = conn.execute(sql, params).fetchall()
+    return [_from_row(row) for row in rows]
+
+
+def count_referrals(
+    conn: sqlite3.Connection,
+    *,
+    status: ReferralStatus | None = None,
+    source: ReferralSource | None = None,
+    urgency: Urgency | None = None,
+    q: str | None = None,
+) -> int:
+    where, params = _build_where(status=status, source=source, urgency=urgency, q=q)
+    row = conn.execute(f"SELECT COUNT(*) AS count FROM referrals{where}", params).fetchone()
+    return row["count"]
+
+
+def list_referrals_in_duplicate_group(
+    conn: sqlite3.Connection, duplicate_group_id: str, *, exclude_id: str | None = None
+) -> list[Referral]:
+    """The other referrals sharing a duplicate group -- used to populate a
+    detail response's `duplicate_group`, so the referral being viewed is
+    excluded from its own list of possible matches."""
+
+    if exclude_id is None:
+        rows = conn.execute(
+            "SELECT * FROM referrals WHERE duplicate_group_id = ?", (duplicate_group_id,)
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT * FROM referrals WHERE duplicate_group_id = ? AND id != ?",
+            (duplicate_group_id, exclude_id),
+        ).fetchall()
     return [_from_row(row) for row in rows]
 
 
@@ -104,6 +152,35 @@ def update_referral_status(conn: sqlite3.Connection, referral_id: str, status: R
         "UPDATE referrals SET status = ? WHERE id = ?", (status.value, referral_id)
     )
     conn.commit()
+
+
+def _build_where(
+    *,
+    status: ReferralStatus | None,
+    source: ReferralSource | None,
+    urgency: Urgency | None,
+    q: str | None,
+) -> tuple[str, list]:
+    clauses: list[str] = []
+    params: list = []
+    if status is not None:
+        clauses.append("status = ?")
+        params.append(status.value)
+    if source is not None:
+        clauses.append("source = ?")
+        params.append(source.value)
+    if urgency is not None:
+        clauses.append("urgency = ?")
+        params.append(urgency.value)
+    if q:
+        # SQLite's default LIKE only case-folds ASCII, so an accented name
+        # (e.g. "Rentería") won't match a differently-cased accented query
+        # -- a known limitation, not a bug, given no full-text extension is
+        # wired up here.
+        clauses.append("patient_raw_full_name LIKE ?")
+        params.append(f"%{q}%")
+    where = f" WHERE {' AND '.join(clauses)}" if clauses else ""
+    return where, params
 
 
 def _to_row(referral: Referral) -> tuple:
