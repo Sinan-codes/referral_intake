@@ -1,0 +1,547 @@
+{
+  "_note": "Synthetic test data. No real patients. Generated for a hiring exercise.",
+  "sources": {
+    "efax": {
+      "description": "OCR output from inbound fax vendor. Timestamps are unix seconds (UTC). Fields may be null.",
+      "records": [
+        {
+          "id": "FX-583203",
+          "received_ts": 1786042320,
+          "patient": {
+            "full_name": "Yusuf Ashford",
+            "dob": "06/12/1949"
+          },
+          "referring_provider": null,
+          "reason_free_text": "Care coordination - housing instability",
+          "priority": "ROUTINE",
+          "page_count": 5
+        },
+        {
+          "id": "FX-347578",
+          "received_ts": 1786113540,
+          "patient": {
+            "full_name": "Hannah Kettleman",
+            "dob": "05/08/1989"
+          },
+          "referring_provider": "Dr. Colleen Mabry",
+          "reason_free_text": "Behavioral health consult - depression screening positive",
+          "priority": "STAT",
+          "page_count": 4
+        },
+        {
+          "id": "FX-397883",
+          "received_ts": 1785741780,
+          "patient": {
+            "full_name": "Sander Quigley",
+            "dob": "01/13/1953"
+          },
+          "referring_provider": null,
+          "reason_free_text": "Sleep disturbance, ongoing",
+          "priority": "ROUTINE",
+          "page_count": 5
+        },
+        {
+          "id": "FX-725907",
+          "received_ts": 1786427160,
+          "patient": {
+            "full_name": "Marguerite Ito",
+            "dob": "03/22/1998"
+          },
+          "referring_provider": "Dr. Colleen Mabry",
+          "reason_free_text": "Panic episodes, escalating frequency",
+          "priority": "ROUTINE",
+          "page_count": 5
+        },
+        {
+          "id": "FX-862580",
+          "received_ts": 1785883020,
+          "patient": {
+            "full_name": "Yusuf Ito",
+            "dob": "08/28/2010"
+          },
+          "referring_provider": null,
+          "reason_free_text": "Medication management review",
+          "priority": "ROUTINE",
+          "page_count": 2
+        },
+        {
+          "id": "FX-529180",
+          "received_ts": 1786171980,
+          "patient": {
+            "full_name": "Alina Ellison",
+            "dob": "07/20/1964"
+          },
+          "referring_provider": "Dr. Alina Reyes",
+          "reason_free_text": "Sleep disturbance, ongoing",
+          "priority": "STAT",
+          "page_count": 4
+        },
+        {
+          "id": "FX-422789",
+          "received_ts": 1785828600,
+          "patient": {
+            "full_name": "Marguerite Ito",
+            "dob": "03/22/1998"
+          },
+          "referring_provider": "Dr. Renata Bloom",
+          "reason_free_text": "Care coordination - housing instability",
+          "priority": "ROUTINE",
+          "page_count": 4
+        },
+        {
+          "id": "FX-161714",
+          "received_ts": 1786247880,
+          "patient": {
+            "full_name": "Delphine Novak",
+            "dob": "11/03/1961"
+          },
+          "referring_provider": null,
+          "reason_free_text": "ADHD evaluation, adult",
+          "priority": "ROUTINE",
+          "page_count": 1
+        },
+        {
+          "id": "FX-782635",
+          "received_ts": 1786344420,
+          "patient": {
+            "full_name": "GRACE DELACROIX",
+            "dob": "03/22/1954"
+          },
+          "referring_provider": "Dr. Ibrahim Sesay",
+          "reason_free_text": "Pediatric behavioral eval",
+          "priority": "ROUTINE",
+          "page_count": 4
+        },
+        {
+          "id": "FX-157874",
+          "received_ts": 1785941100,
+          "patient": {
+            "full_name": "Naomi Sood",
+            "dob": "01/22/1954"
+          },
+          "referring_provider": "Dr. Harold Kwan",
+          "reason_free_text": "Follow-up after ED visit, anxiety",
+          "priority": "ROUTINE",
+          "page_count": 2
+        },
+        {
+          "id": "FX-375677",
+          "received_ts": 1785792420,
+          "patient": {
+            "full_name": "Grace Novak",
+            "dob": "03/20/1975"
+          },
+          "referring_provider": "Dr. Harold Kwan",
+          "reason_free_text": "Follow-up after ED visit, anxiety",
+          "priority": "STAT",
+          "page_count": 6
+        },
+        {
+          "id": "FX-793081",
+          "received_ts": 1785969720,
+          "patient": {
+            "full_name": "Theo Barnhardt",
+            "dob": "11/06/1982"
+          },
+          "referring_provider": "Dr. Harold Kwan",
+          "reason_free_text": "Panic episodes, escalating frequency",
+          "priority": "ROUTINE",
+          "page_count": 6
+        }
+      ]
+    },
+    "ehr_fhir": {
+      "description": "FHIR ServiceRequest resources polled from a partner EHR. Names are 'LAST, FIRST'.",
+      "records": [
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-99790",
+          "status": "active",
+          "authoredOn": "2026-08-09T12:53:00Z",
+          "subject": {
+            "reference": "Patient/5306",
+            "display": "QUIGLEY, SANDER",
+            "birthDate": "1953-01-13"
+          },
+          "requester": {
+            "display": "Dr. Ibrahim Sesay"
+          },
+          "reasonCode": [
+            {
+              "text": "Grief counseling request"
+            }
+          ],
+          "priority": "routine"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-64660",
+          "status": "active",
+          "authoredOn": "2026-08-07T03:35:00Z",
+          "subject": {
+            "reference": "Patient/6947",
+            "display": "FARROW, KWAME",
+            "birthDate": "2000-07-06"
+          },
+          "requester": {
+            "display": "Northline Family Health"
+          },
+          "reasonCode": [
+            {
+              "text": "ADHD evaluation, adult"
+            }
+          ],
+          "priority": "asap"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-84564",
+          "status": "active",
+          "authoredOn": "2026-08-04T02:01:00Z",
+          "subject": {
+            "reference": "Patient/5392",
+            "display": "BRIGHTWATER, EMMETT",
+            "birthDate": "1974-09-05"
+          },
+          "requester": {
+            "display": "Dr. Renata Bloom"
+          },
+          "reasonCode": [
+            {
+              "text": "Chronic pain w/ mood component"
+            }
+          ],
+          "priority": "routine"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-83279",
+          "status": "active",
+          "authoredOn": "2026-08-03T10:29:00Z",
+          "subject": {
+            "reference": "Patient/8403",
+            "display": "OZTURK, OSCAR",
+            "birthDate": "1990-01-24"
+          },
+          "requester": {
+            "display": "Dr. Simone Attah"
+          },
+          "reasonCode": [
+            {
+              "text": "Grief counseling request"
+            }
+          ],
+          "priority": "urgent"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-32737",
+          "status": "active",
+          "authoredOn": "2026-08-06T03:32:00Z",
+          "subject": {
+            "reference": "Patient/2443",
+            "display": "ITO, DESMOND",
+            "birthDate": "2003-07-05"
+          },
+          "requester": {
+            "display": "Dr. Colleen Mabry"
+          },
+          "reasonCode": [
+            {
+              "text": "ADHD evaluation, adult"
+            }
+          ],
+          "priority": "routine"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-75109",
+          "status": "active",
+          "authoredOn": "2026-08-04T12:24:00Z",
+          "subject": {
+            "reference": "Patient/1015",
+            "display": "OKONKWO, HANNAH",
+            "birthDate": "2004-01-10"
+          },
+          "requester": {
+            "display": "Valley Primary Care"
+          },
+          "reasonCode": [
+            {
+              "text": "Substance use counseling request"
+            }
+          ],
+          "priority": "routine"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-60683",
+          "status": "active",
+          "authoredOn": "2026-08-10T18:18:00Z",
+          "subject": {
+            "reference": "Patient/7443",
+            "display": "NOVAK, GRACE",
+            "birthDate": "1975-03-20"
+          },
+          "requester": {
+            "display": "Dr. Simone Attah"
+          },
+          "reasonCode": [
+            {
+              "text": "Substance use counseling request"
+            }
+          ],
+          "priority": "routine"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-15071",
+          "status": "active",
+          "authoredOn": "2026-08-08T13:55:00Z",
+          "subject": {
+            "reference": "Patient/1073",
+            "display": "FARROW, DELPHINE",
+            "birthDate": "1999-03-24"
+          },
+          "requester": {
+            "display": "Dr. Ibrahim Sesay"
+          },
+          "reasonCode": [
+            {
+              "text": "Follow-up after ED visit, anxiety"
+            }
+          ],
+          "priority": "urgent"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-21359",
+          "status": "active",
+          "authoredOn": "2026-08-11T15:41:00Z",
+          "subject": {
+            "reference": "Patient/3484",
+            "display": "RENTER\u00cdA, MARGUERITE",
+            "birthDate": "1998-03-25"
+          },
+          "requester": {
+            "display": "Valley Primary Care"
+          },
+          "reasonCode": [
+            {
+              "text": "ADHD evaluation, adult"
+            }
+          ],
+          "priority": "urgent"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-21213",
+          "status": "active",
+          "authoredOn": "2026-08-05T06:22:00Z",
+          "subject": {
+            "reference": "Patient/7372",
+            "display": "VUKOVIC, FELIX",
+            "birthDate": "1985-11-02"
+          },
+          "requester": {
+            "display": "Dr. Renata Bloom"
+          },
+          "reasonCode": [
+            {
+              "text": "Chronic pain w/ mood component"
+            }
+          ],
+          "priority": "asap"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-98627",
+          "status": "active",
+          "authoredOn": "2026-08-05T18:34:00Z",
+          "subject": {
+            "reference": "Patient/3560",
+            "display": "PETROSYAN, KWAME",
+            "birthDate": "2012-05-24"
+          },
+          "requester": {
+            "display": "Valley Primary Care"
+          },
+          "reasonCode": [
+            {
+              "text": "Behavioral health consult - depression screening positive"
+            }
+          ],
+          "priority": "asap"
+        },
+        {
+          "resourceType": "ServiceRequest",
+          "id": "sr-38875",
+          "status": "active",
+          "authoredOn": "2026-08-07T20:35:00Z",
+          "subject": {
+            "reference": "Patient/5363",
+            "display": "ACHTERBERG, OSCAR",
+            "birthDate": "1949-07-24"
+          },
+          "requester": {
+            "display": "Dr. Tomas Ferreira"
+          },
+          "reasonCode": [
+            {
+              "text": "Sleep disturbance, ongoing"
+            }
+          ],
+          "priority": "routine"
+        }
+      ]
+    },
+    "web_form": {
+      "description": "Public referral form submissions. Timestamps carry a -07:00 offset.",
+      "records": [
+        {
+          "submissionId": "web_589936",
+          "submittedAt": "2026-08-03T12:32:00-07:00",
+          "firstName": "Grace",
+          "lastName": "Delacroix",
+          "dateOfBirth": "1954-03-22",
+          "referredBy": "Family member",
+          "notes": "ADHD evaluation, adult",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_865154",
+          "submittedAt": "2026-08-05T13:02:00-07:00",
+          "firstName": "Lucia",
+          "lastName": "Vasquez",
+          "dateOfBirth": "1997-08-07",
+          "referredBy": "Dr. Tomas Ferreira",
+          "notes": "Pediatric behavioral eval",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_179002",
+          "submittedAt": "2026-08-06T05:22:00-07:00",
+          "firstName": "Kwame",
+          "lastName": "Ashford",
+          "dateOfBirth": "1975-10-01",
+          "referredBy": "Dr. Renata Bloom",
+          "notes": "Sleep disturbance, ongoing",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_697566",
+          "submittedAt": "2026-08-07T02:25:00-07:00",
+          "firstName": "Theo",
+          "lastName": "Ravensworth",
+          "dateOfBirth": "2001-09-12",
+          "referredBy": "Dr. Alina Reyes",
+          "notes": "Substance use counseling request",
+          "urgent": true,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_526146",
+          "submittedAt": "2026-08-11T11:56:00-07:00",
+          "firstName": "Bob",
+          "lastName": "Barnhardt",
+          "dateOfBirth": "1962-12-31",
+          "referredBy": "Dr. Tomas Ferreira",
+          "notes": "Substance use counseling request",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_454716",
+          "submittedAt": "2026-08-08T11:11:00-07:00",
+          "firstName": "Delphine",
+          "lastName": "Vasquez",
+          "dateOfBirth": "2012-01-08",
+          "referredBy": "Dr. Harold Kwan",
+          "notes": "Medication management review",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_739983",
+          "submittedAt": "2026-08-03T22:40:00-07:00",
+          "firstName": "Robert",
+          "lastName": "Barnhardt",
+          "dateOfBirth": "1962-12-31",
+          "referredBy": "Dr. Tomas Ferreira",
+          "notes": "Pediatric behavioral eval",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_482379",
+          "submittedAt": "2026-08-09T19:13:00-07:00",
+          "firstName": "Oscar",
+          "lastName": "Ozturk",
+          "dateOfBirth": "1990-01-24",
+          "referredBy": "Valley Primary Care",
+          "notes": "Medication management review",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_869001",
+          "submittedAt": "2026-08-04T10:43:00-07:00",
+          "firstName": "Delphine",
+          "lastName": "Brightwater",
+          "dateOfBirth": "1984-07-16",
+          "referredBy": "Dr. Simone Attah",
+          "notes": "Medication management review",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_904618",
+          "submittedAt": "2026-08-07T15:53:00-07:00",
+          "firstName": "Curtis",
+          "lastName": "Sood",
+          "dateOfBirth": "1959-01-12",
+          "referredBy": "Family member",
+          "notes": "Follow-up after ED visit, anxiety",
+          "urgent": false,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_589932",
+          "submittedAt": "2026-08-11T04:53:00-07:00",
+          "firstName": "Felix",
+          "lastName": "Vukovic",
+          "dateOfBirth": "1996-10-15",
+          "referredBy": "Dr. Tomas Ferreira",
+          "notes": "Post-partum mood screening",
+          "urgent": true,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_985485",
+          "submittedAt": "2026-08-05T00:21:00-07:00",
+          "firstName": "Lucia",
+          "lastName": "Brightwater",
+          "dateOfBirth": "1998-03-25",
+          "referredBy": "Family member",
+          "notes": "",
+          "urgent": true,
+          "consentToContact": true
+        },
+        {
+          "submissionId": "web_621992",
+          "submittedAt": "2026-08-10T17:06:00-07:00",
+          "firstName": "Emmett",
+          "lastName": "Brightwater",
+          "dateOfBirth": "1974-09-05",
+          "referredBy": "Valley Primary Care",
+          "notes": "Behavioral health consult - depression screening positive",
+          "urgent": false,
+          "consentToContact": true
+        }
+      ]
+    }
+  }
+}
