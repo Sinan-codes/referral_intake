@@ -74,7 +74,7 @@ uv run pytest
 
 ## Duplicate-matching rule, and where it breaks
 
-**The rule:** two referrals match if they share `(last_name, date_of_birth)`, case- and whitespace-insensitive on the name. Matching works across sources and within a single source; a referral missing either field is left out of every group entirely rather than guessed at.
+**The rule:** two referrals match if they share `(last_name, date_of_birth)`, case- and whitespace-insensitive on the name. Matching works across sources and within a single source; a referral missing either field is left out of every group entirely rather than guessed at. A narrow exception to the exact rule exists for OCR noise from `efax` — see the false-negatives discussion below.
 
 **Why not full name:** the seed data has a `web_form` "Bob Barnhardt" and a separate `web_form` "Robert Barnhardt", same DOB — a nickname or spelling variant is a normal thing for two independently-filled-out forms to produce, and requiring exact full-name agreement would hide that pair even though everything else about them lines up.
 
@@ -101,7 +101,7 @@ One flat `referrals` table, a single long-lived connection opened once in the Fa
 | File | Covers |
 |---|---|
 | `test_normalization.py` | Each source's normalizer: happy path, the one field that raises `NormalizationError`, casing/splitting/urgency-mapping quirks, batch skip-bad-keep-good behavior. |
-| `test_duplicates.py` | The match key, grouping across and within sources, both decoys the rule is designed to reject, `apply_duplicate_groups`'s immutability and ordering. |
+| `test_duplicates.py` | The match key, grouping across and within sources, both decoys the rule is designed to reject, the fuzzy OCR-tolerance tier's scope (distance threshold, `efax`-only restriction, transitive clustering), `apply_duplicate_groups`'s immutability and ordering. |
 | `test_status_transition.py` | Enumerates the full status × status grid against the workflow diagram — every allowed pair and every disallowed one, not just the happy path. |
 | `test_api.py` | The HTTP boundary itself: the error envelope actually matches on every rejection path (404/409/422, including FastAPI's own validation errors), correct status codes, the duplicate-group response shape. |
 
