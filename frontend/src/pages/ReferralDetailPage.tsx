@@ -22,7 +22,6 @@ export function ReferralDetailPage() {
     queryKey: ['referral', id] as const,
     queryFn: () => getReferral(id!),
     enabled: Boolean(id),
-    retry: (failureCount, err) => !(err instanceof ApiError && err.status === 404) && failureCount < 3,
   })
 
   return (
