@@ -18,6 +18,7 @@ import sqlite3
 from datetime import date, datetime
 from pathlib import Path
 
+from app.models.api import SortOrder
 from app.models.referral import PatientName, Referral, ReferralSource, ReferralStatus, Urgency
 
 DEFAULT_DB_PATH = Path(__file__).resolve().parent.parent / "db.sqlite3"
@@ -101,7 +102,7 @@ def list_referrals(
     source: ReferralSource | None = None,
     urgency: Urgency | None = None,
     q: str | None = None,
-    sort: str = "-received_at",
+    sort: SortOrder = "-received_at",
     limit: int | None = None,
     offset: int = 0,
 ) -> list[Referral]:

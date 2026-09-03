@@ -10,9 +10,13 @@ frontend, rather than hand-duplicating them on each side.
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from app.models.referral import Referral, ReferralSource, ReferralStatus, Urgency
+
+SortOrder = Literal["-received_at", "received_at"]
 
 
 class ReferralSummary(BaseModel):
@@ -57,7 +61,7 @@ class ReferralListQuery(BaseModel):
     source: ReferralSource | None = None
     urgency: Urgency | None = None
     q: str | None = None  # free-text match on patient name
-    sort: str = "-received_at"  # "-received_at" | "received_at"
+    sort: SortOrder = "-received_at"
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=20, ge=1, le=100)
 
