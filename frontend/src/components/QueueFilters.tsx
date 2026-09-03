@@ -66,105 +66,99 @@ export function QueueFilters({
   }
 
   return (
-    <div className="flex flex-wrap items-end gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <FilterField label="Search" htmlFor="filter-search" className="min-w-56 flex-1">
-        <div className="relative">
-          <svg
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-              clipRule="evenodd"
+    <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-wrap items-end gap-4">
+        <FilterField label="Search" htmlFor="filter-search" className="min-w-56 flex-1">
+          <div className="relative">
+            <svg
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+              className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <input
+              id="filter-search"
+              type="search"
+              placeholder="Patient name…"
+              value={filters.q}
+              onChange={(e) => onChange({ ...filters, q: e.target.value })}
+              className={`${controlClass} w-full pl-8`}
             />
-          </svg>
-          <input
-            id="filter-search"
-            type="search"
-            placeholder="Patient name…"
-            value={filters.q}
-            onChange={(e) => onChange({ ...filters, q: e.target.value })}
-            className={`${controlClass} w-full pl-8`}
-          />
-        </div>
-      </FilterField>
+          </div>
+        </FilterField>
 
-      <FilterField label="Status" htmlFor="filter-status">
-        <select
-          id="filter-status"
-          value={filters.status}
-          onChange={(e) => onChange({ ...filters, status: e.target.value as ReferralStatus | '' })}
-          className={controlClass}
-        >
-          <option value="">All statuses</option>
-          {STATUS_OPTIONS.map((status) => (
-            <option key={status} value={status}>
-              {STATUS_LABELS[status]}
-            </option>
-          ))}
-        </select>
-      </FilterField>
+        <FilterField label="Status" htmlFor="filter-status">
+          <select
+            id="filter-status"
+            value={filters.status}
+            onChange={(e) => onChange({ ...filters, status: e.target.value as ReferralStatus | '' })}
+            className={controlClass}
+          >
+            <option value="">All statuses</option>
+            {STATUS_OPTIONS.map((status) => (
+              <option key={status} value={status}>
+                {STATUS_LABELS[status]}
+              </option>
+            ))}
+          </select>
+        </FilterField>
 
-      <FilterField label="Source" htmlFor="filter-source">
-        <select
-          id="filter-source"
-          value={filters.source}
-          onChange={(e) => onChange({ ...filters, source: e.target.value as ReferralSource | '' })}
-          className={controlClass}
-        >
-          <option value="">All sources</option>
-          {SOURCE_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </FilterField>
+        <FilterField label="Source" htmlFor="filter-source">
+          <select
+            id="filter-source"
+            value={filters.source}
+            onChange={(e) => onChange({ ...filters, source: e.target.value as ReferralSource | '' })}
+            className={controlClass}
+          >
+            <option value="">All sources</option>
+            {SOURCE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </FilterField>
 
-      <FilterField label="Urgency" htmlFor="filter-urgency">
-        <select
-          id="filter-urgency"
-          value={filters.urgency}
-          onChange={(e) => onChange({ ...filters, urgency: e.target.value as Urgency | '' })}
-          className={controlClass}
-        >
-          <option value="">All urgencies</option>
-          {URGENCY_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </FilterField>
+        <FilterField label="Urgency" htmlFor="filter-urgency">
+          <select
+            id="filter-urgency"
+            value={filters.urgency}
+            onChange={(e) => onChange({ ...filters, urgency: e.target.value as Urgency | '' })}
+            className={controlClass}
+          >
+            <option value="">All urgencies</option>
+            {URGENCY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </FilterField>
 
-      {hasActiveFilters(filters) && (
-        <div className="flex flex-col gap-1">
-          {/* Invisible label spacer -- keeps the button's top edge level
-           * with every labeled control instead of floating below a gap
-           * that only exists here. */}
-          <span aria-hidden="true" className="invisible text-xs font-medium uppercase tracking-wide">
-            Clear
-          </span>
-          <Button variant="ghost" onClick={clear}>
-            Clear filters
-          </Button>
-        </div>
-      )}
+        <FilterField label="Sort by" htmlFor="filter-sort" className="ml-auto">
+          <select
+            id="filter-sort"
+            value={filters.sort}
+            onChange={(e) => onChange({ ...filters, sort: e.target.value as QueueFiltersState['sort'] })}
+            className={controlClass}
+          >
+            <option value="-received_at">Newest first</option>
+            <option value="received_at">Oldest first</option>
+          </select>
+        </FilterField>
+      </div>
 
-      <FilterField label="Sort by" htmlFor="filter-sort" className="ml-auto">
-        <select
-          id="filter-sort"
-          value={filters.sort}
-          onChange={(e) => onChange({ ...filters, sort: e.target.value as QueueFiltersState['sort'] })}
-          className={controlClass}
-        >
-          <option value="-received_at">Newest first</option>
-          <option value="received_at">Oldest first</option>
-        </select>
-      </FilterField>
+      <div className="flex justify-end border-t border-slate-100 pt-3">
+        <Button variant="ghost" disabled={!hasActiveFilters(filters)} onClick={clear}>
+          Clear filters
+        </Button>
+      </div>
     </div>
   )
 }
