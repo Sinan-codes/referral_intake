@@ -129,6 +129,26 @@ def count_referrals(
     return row["count"]
 
 
+def count_duplicate_referrals(
+    conn: sqlite3.Connection,
+    *,
+    status: ReferralStatus | None = None,
+    source: ReferralSource | None = None,
+    urgency: Urgency | None = None,
+    q: str | None = None,
+) -> int:
+    """Of the referrals matching the same filters as `count_referrals`, how
+    many are flagged as a possible duplicate -- so the queue can show
+    "X of Y found are possible duplicates" for the current search/filter,
+    not just the current page."""
+
+    where, params = _build_where(status=status, source=source, urgency=urgency, q=q)
+    condition = "duplicate_group_id IS NOT NULL"
+    where = f"{where} AND {condition}" if where else f" WHERE {condition}"
+    row = conn.execute(f"SELECT COUNT(*) AS count FROM referrals{where}", params).fetchone()
+    return row["count"]
+
+
 def list_referrals_in_duplicate_group(
     conn: sqlite3.Connection, duplicate_group_id: str, *, exclude_id: str | None = None
 ) -> list[Referral]:

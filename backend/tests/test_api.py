@@ -65,6 +65,26 @@ class TestListReferrals:
             response = client.get("/referrals", params={"sort": sort})
             assert response.status_code == 200
 
+    def test_duplicate_count_matches_possible_duplicate_flags_on_every_row(self, client):
+        # duplicate_count is a separate COUNT(*) query from the one that
+        # fetches rows -- cross-check it against the actual flags on a full,
+        # unpaginated fetch rather than asserting a hardcoded number, so this
+        # catches a mismatched WHERE clause between the two queries.
+        response = client.get("/referrals", params={"page_size": 100})
+
+        body = response.json()
+        actual = sum(1 for r in body["data"] if r["possible_duplicate"])
+        assert body["meta"]["duplicate_count"] == actual
+        assert actual > 0  # the seed data has known duplicate pairs
+
+    def test_duplicate_count_reflects_the_same_filters_as_total(self, client):
+        response = client.get("/referrals", params={"urgency": "stat", "page_size": 100})
+
+        body = response.json()
+        actual = sum(1 for r in body["data"] if r["possible_duplicate"])
+        assert body["meta"]["duplicate_count"] == actual
+        assert body["meta"]["duplicate_count"] <= body["meta"]["total"]
+
 
 class TestGetReferral:
     def test_get_existing_referral_includes_duplicate_group(self, client):

@@ -14,6 +14,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query, Request
 
 from app.db import (
+    count_duplicate_referrals,
     count_referrals,
     get_referral,
     list_referrals,
@@ -63,6 +64,9 @@ async def list_referrals_route(
     total = count_referrals(
         conn, status=query.status, source=query.source, urgency=query.urgency, q=query.q
     )
+    duplicate_count = count_duplicate_referrals(
+        conn, status=query.status, source=query.source, urgency=query.urgency, q=query.q
+    )
     referrals = list_referrals(
         conn,
         status=query.status,
@@ -77,7 +81,11 @@ async def list_referrals_route(
     return ReferralListResponse(
         data=referrals,
         meta=PaginationMeta(
-            page=query.page, page_size=query.page_size, total=total, total_pages=total_pages
+            page=query.page,
+            page_size=query.page_size,
+            total=total,
+            total_pages=total_pages,
+            duplicate_count=duplicate_count,
         ),
     )
 

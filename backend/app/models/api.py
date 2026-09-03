@@ -50,6 +50,7 @@ class PaginationMeta(BaseModel):
     page_size: int
     total: int
     total_pages: int
+    duplicate_count: int  # of `total`, how many are flagged as a possible duplicate
 
 
 class ReferralListResponse(BaseModel):

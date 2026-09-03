@@ -340,6 +340,10 @@
           "total_pages": {
             "type": "integer",
             "title": "Total Pages"
+          },
+          "duplicate_count": {
+            "type": "integer",
+            "title": "Duplicate Count"
           }
         },
         "type": "object",
@@ -347,7 +351,8 @@
           "page",
           "page_size",
           "total",
-          "total_pages"
+          "total_pages",
+          "duplicate_count"
         ],
         "title": "PaginationMeta"
       },
