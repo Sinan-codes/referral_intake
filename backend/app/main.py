@@ -1,7 +1,9 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.db import get_connection, init_db, list_referrals, upsert_referrals
@@ -25,7 +27,24 @@ async def lifespan(app: FastAPI):
     conn.close()
 
 
+# The deployed frontend is a separate Render service, on a different origin
+# from this API, so the browser needs an explicit CORS allowance -- unlike
+# local dev, where Vite's proxy makes requests same-origin and this never
+# comes into play. Comma-separated so a preview/staging URL can be added
+# alongside production without a code change.
+FRONTEND_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("FRONTEND_ORIGIN", "").split(",")
+    if origin.strip()
+]
+
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=FRONTEND_ORIGINS,
+    allow_methods=["GET", "PATCH"],
+    allow_headers=["*"],
+)
 app.include_router(referrals_router)
 
 
