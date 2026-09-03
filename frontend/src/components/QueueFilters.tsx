@@ -1,15 +1,7 @@
 import type { ReactNode } from 'react'
 import type { ReferralSource, ReferralStatus, Urgency } from '../api/types'
+import type { QueueFiltersState } from '../lib/queueFilters'
 import { STATUS_LABELS } from '../lib/statusWorkflow'
-import { Button } from './Button'
-
-export interface QueueFiltersState {
-  status: ReferralStatus | ''
-  source: ReferralSource | ''
-  urgency: Urgency | ''
-  q: string
-  sort: '-received_at' | 'received_at'
-}
 
 const STATUS_OPTIONS: ReferralStatus[] = ['new', 'in_review', 'accepted', 'rejected', 'scheduled']
 const SOURCE_OPTIONS: { value: ReferralSource; label: string }[] = [
@@ -25,10 +17,6 @@ const URGENCY_OPTIONS: { value: Urgency; label: string }[] = [
 
 const controlClass =
   'h-9 rounded-md border border-slate-300 bg-white px-2.5 text-sm text-slate-700 focus:border-slate-500 focus:outline-none'
-
-function hasActiveFilters(filters: QueueFiltersState): boolean {
-  return filters.status !== '' || filters.source !== '' || filters.urgency !== '' || filters.q !== ''
-}
 
 /** A labeled field group -- every filter gets a visible name above its
  * control instead of relying on placeholder/default-option text alone,
@@ -61,12 +49,8 @@ export function QueueFilters({
   filters: QueueFiltersState
   onChange: (next: QueueFiltersState) => void
 }) {
-  function clear() {
-    onChange({ status: '', source: '', urgency: '', q: '', sort: filters.sort })
-  }
-
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-end gap-4">
         <FilterField label="Search" htmlFor="filter-search" className="min-w-56 flex-1">
           <div className="relative">
@@ -152,12 +136,6 @@ export function QueueFilters({
             <option value="received_at">Oldest first</option>
           </select>
         </FilterField>
-      </div>
-
-      <div className="flex justify-end border-t border-slate-100 pt-3">
-        <Button variant="ghost" disabled={!hasActiveFilters(filters)} onClick={clear}>
-          Clear filters
-        </Button>
       </div>
     </div>
   )

@@ -99,6 +99,8 @@ export interface components {
             total: number;
             /** Total Pages */
             total_pages: number;
+            /** Duplicate Count */
+            duplicate_count: number;
         };
         /**
          * PatientName
