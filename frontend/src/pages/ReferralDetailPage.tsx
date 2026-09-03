@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { ApiError, getReferral } from '../api/client'
 import { SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
 import { EmptyState, ErrorState, LoadingState } from '../components/states'
+import { StatusActions } from '../components/StatusActions'
 import { formatDate, formatDateTime } from '../lib/format'
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -65,6 +66,15 @@ export function ReferralDetailPage() {
               <Field label="Reason" value={data.data.reason ?? 'Not provided'} />
               <Field label="Source record ID" value={data.data.source_record_id} />
             </dl>
+
+            <div className="mt-6 border-t border-slate-100 pt-6">
+              <h2 className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                Update status
+              </h2>
+              <div className="mt-2">
+                <StatusActions referral={data.data} />
+              </div>
+            </div>
           </div>
 
           <div className="rounded-lg border border-orange-200 bg-orange-50 p-6">
