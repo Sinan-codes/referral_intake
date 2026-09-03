@@ -60,7 +60,7 @@ export function ReferralDetailPage() {
               </div>
             </div>
 
-            <dl className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <dl className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Field
                 label="Date of birth"
                 value={data.data.date_of_birth ? formatDate(data.data.date_of_birth) : 'Unknown'}
