@@ -32,9 +32,9 @@ class TestListReferrals:
         assert response.status_code == 200
         body = response.json()
         assert "data" in body and "meta" in body
-        # 37 seed records normalize cleanly (no NormalizationError skips);
+        # 38 seed records normalize cleanly (no NormalizationError skips);
         # a default page_size of 20 caps the first page below that.
-        assert body["meta"]["total"] == 37
+        assert body["meta"]["total"] == 38
         assert len(body["data"]) == 20
 
     def test_invalid_status_returns_enveloped_422(self, client):

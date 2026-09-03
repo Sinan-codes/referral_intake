@@ -168,6 +168,85 @@ class TestFindDuplicateGroups:
         assert groups["dup:ito:1998-03-22"] == [ito_a, ito_b]
 
 
+# --- fuzzy last-name matching (OCR tolerance) ---------------------------------------
+
+
+class TestFuzzyLastNameMatching:
+    def test_efax_ocr_typo_in_last_name_still_matches_same_dob(self):
+        original = _referral(
+            id="ehr_fhir:1",
+            source=ReferralSource.EHR_FHIR,
+            last_name="Okonkwo",
+            date_of_birth=date(2004, 1, 10),
+        )
+        ocr_typo = _referral(
+            id="efax:1",
+            source=ReferralSource.EFAX,
+            last_name="Okonkvo",
+            date_of_birth=date(2004, 1, 10),
+        )
+
+        groups = find_duplicate_groups([original, ocr_typo])
+
+        assert list(groups.values()) == [[original, ocr_typo]]
+
+    def test_fuzzy_last_name_match_requires_at_least_one_efax_source(self):
+        a = _referral(
+            id="web_form:1",
+            source=ReferralSource.WEB_FORM,
+            last_name="Okonkwo",
+            date_of_birth=date(2004, 1, 10),
+        )
+        b = _referral(
+            id="ehr_fhir:1",
+            source=ReferralSource.EHR_FHIR,
+            last_name="Okonkvo",
+            date_of_birth=date(2004, 1, 10),
+        )
+
+        assert find_duplicate_groups([a, b]) == {}
+
+    def test_fuzzy_last_name_match_requires_distance_at_most_one(self):
+        a = _referral(
+            id="efax:1",
+            source=ReferralSource.EFAX,
+            last_name="Novak",
+            date_of_birth=date(1975, 3, 20),
+        )
+        b = _referral(
+            id="ehr_fhir:1",
+            source=ReferralSource.EHR_FHIR,
+            last_name="Noban",
+            date_of_birth=date(1975, 3, 20),
+        )
+
+        assert find_duplicate_groups([a, b]) == {}
+
+    def test_transitive_fuzzy_cluster_groups_all_three(self):
+        a = _referral(
+            id="efax:1",
+            source=ReferralSource.EFAX,
+            last_name="Okonkwo",
+            date_of_birth=date(2004, 1, 10),
+        )
+        b = _referral(
+            id="efax:2",
+            source=ReferralSource.EFAX,
+            last_name="Okankwo",
+            date_of_birth=date(2004, 1, 10),
+        )
+        c = _referral(
+            id="efax:3",
+            source=ReferralSource.EFAX,
+            last_name="Okankwa",
+            date_of_birth=date(2004, 1, 10),
+        )
+
+        groups = find_duplicate_groups([a, b, c])
+
+        assert list(groups.values()) == [[a, b, c]]
+
+
 # --- apply_duplicate_groups ---------------------------------------------------------
 
 

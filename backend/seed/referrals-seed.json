@@ -147,6 +147,18 @@
           "reason_free_text": "Panic episodes, escalating frequency",
           "priority": "ROUTINE",
           "page_count": 6
+        },
+        {
+          "id": "FX-604821",
+          "received_ts": 1786526100,
+          "patient": {
+            "full_name": "Hannah Okonkvo",
+            "dob": "01/10/2004"
+          },
+          "referring_provider": "Valley Primary Care",
+          "reason_free_text": "Substance use counseling request - duplicate fax resend",
+          "priority": "ROUTINE",
+          "page_count": 3
         }
       ]
     },
