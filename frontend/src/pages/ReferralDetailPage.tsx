@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { ApiError, getReferral } from '../api/client'
 import { DuplicateBadge, SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
 import { Card } from '../components/Card'
+import { DuplicateComparison } from '../components/DuplicateComparison'
 import { EmptyState, ErrorState, LoadingState } from '../components/states'
 import { StatusActions } from '../components/StatusActions'
 import { formatDate, formatDateTime } from '../lib/format'
@@ -86,30 +87,18 @@ export function ReferralDetailPage() {
             </div>
           </Card>
 
-          <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
-            <h2 className="text-sm font-semibold text-orange-900">Possible duplicates</h2>
-            {(data.data.duplicate_group ?? []).length === 0 ? (
-              <p className="mt-1 text-sm text-orange-800">None found.</p>
-            ) : (
-              <ul className="mt-3 flex flex-col gap-2">
-                {(data.data.duplicate_group ?? []).map((peer) => (
-                  <li key={peer.id}>
-                    <Link
-                      to={`/referrals/${peer.id}`}
-                      className="flex flex-wrap items-center gap-2 rounded-md border border-orange-200 bg-white px-3 py-2 text-sm hover:border-orange-400"
-                    >
-                      <span className="font-medium text-slate-900">{peer.patient_name}</span>
-                      <SourceBadge source={peer.source} />
-                      <StatusBadge status={peer.status} />
-                      <span className="ml-auto tabular-nums text-slate-500">
-                        {formatDateTime(peer.received_at)}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {data.data.possible_duplicate && (
+            <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
+              <h2 className="text-sm font-semibold text-orange-900">Possible duplicates</h2>
+              <p className="mt-1 text-sm text-orange-800">
+                Rows highlighted below don't agree across records -- check those before treating
+                this as a confirmed match.
+              </p>
+              <div className="mt-3">
+                <DuplicateComparison referral={data.data} />
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

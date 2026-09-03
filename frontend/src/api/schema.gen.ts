@@ -199,6 +199,10 @@ export interface components {
          *
          *     Deliberately not the full `Referral` -- embedding full records into each
          *     other's duplicate group would nest indefinitely for a larger cluster.
+         *     Carries every field the frontend's duplicate comparison table needs to
+         *     judge whether a match is real (urgency/provider/reason alongside the
+         *     demographics), but not `duplicate_group_id`/`possible_duplicate` --
+         *     those describe the peer's own membership, not this referral's.
          */
         ReferralSummary: {
             /** Id */
@@ -210,6 +214,11 @@ export interface components {
             date_of_birth?: string | null;
             /** Received At */
             received_at: string;
+            /** Referring Provider */
+            referring_provider?: string | null;
+            /** Reason */
+            reason?: string | null;
+            urgency: components["schemas"]["Urgency"];
             status: components["schemas"]["ReferralStatus"];
         };
         /** StatusUpdateRequest */
