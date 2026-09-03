@@ -8,6 +8,7 @@ import { QueueFilters, type QueueFiltersState } from '../components/QueueFilters
 import { EmptyState, ErrorState, LoadingState } from '../components/states'
 import { formatDateTime } from '../lib/format'
 import { useDebouncedValue } from '../lib/useDebouncedValue'
+import { useDocumentTitle } from '../lib/useDocumentTitle'
 
 const PAGE_SIZE = 20
 
@@ -20,6 +21,7 @@ const DEFAULT_FILTERS: QueueFiltersState = {
 }
 
 export function QueuePage() {
+  useDocumentTitle('Queue · Referral Intake')
   const [filters, setFilters] = useState<QueueFiltersState>(DEFAULT_FILTERS)
   const [page, setPage] = useState(1)
   const debouncedQuery = useDebouncedValue(filters.q, 300)

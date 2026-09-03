@@ -5,6 +5,7 @@ import { SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
 import { EmptyState, ErrorState, LoadingState } from '../components/states'
 import { StatusActions } from '../components/StatusActions'
 import { formatDate, formatDateTime } from '../lib/format'
+import { useDocumentTitle } from '../lib/useDocumentTitle'
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
@@ -23,6 +24,10 @@ export function ReferralDetailPage() {
     queryFn: () => getReferral(id!),
     enabled: Boolean(id),
   })
+
+  useDocumentTitle(
+    data ? `${data.data.patient_name.raw_full_name} · Referral Intake` : 'Referral · Referral Intake',
+  )
 
   return (
     <div className="flex flex-col gap-4">
