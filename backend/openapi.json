@@ -1,0 +1,710 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/referrals": {
+      "get": {
+        "tags": [
+          "referrals"
+        ],
+        "summary": "List Referrals Route",
+        "operationId": "list_referrals_route_referrals_get",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReferralStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReferralSource"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          },
+          {
+            "name": "urgency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Urgency"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Urgency"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "-received_at",
+                "received_at"
+              ],
+              "type": "string",
+              "default": "-received_at",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferralListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/referrals/{referral_id}": {
+      "get": {
+        "tags": [
+          "referrals"
+        ],
+        "summary": "Get Referral Route",
+        "operationId": "get_referral_route_referrals__referral_id__get",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferralDetailResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Referral not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/referrals/{referral_id}/status": {
+      "patch": {
+        "tags": [
+          "referrals"
+        ],
+        "summary": "Update Status Route",
+        "operationId": "update_status_route_referrals__referral_id__status_patch",
+        "parameters": [
+          {
+            "name": "referral_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Referral Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusUpdateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Referral not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Transition not allowed by the status workflow",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorDetail": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "field": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Field"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorDetail"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "PaginationMeta": {
+        "properties": {
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page",
+          "page_size",
+          "total",
+          "total_pages"
+        ],
+        "title": "PaginationMeta"
+      },
+      "PatientName": {
+        "properties": {
+          "raw_full_name": {
+            "type": "string",
+            "title": "Raw Full Name"
+          },
+          "first_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Name"
+          },
+          "last_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "raw_full_name"
+        ],
+        "title": "PatientName",
+        "description": "Best-effort split of whatever name shape the source used.\n\n`raw_full_name` is always populated -- it's what we display and search\non. `first_name`/`last_name` are Optional because splitting \"GRACE\nDELACROIX\" or \"RENTERIA, MARGUERITE\" into parts is a heuristic, not a\nguarantee, and callers must not assume it always succeeded."
+      },
+      "Referral": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ReferralSource"
+          },
+          "source_record_id": {
+            "type": "string",
+            "title": "Source Record Id"
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Received At"
+          },
+          "patient_name": {
+            "$ref": "#/components/schemas/PatientName"
+          },
+          "date_of_birth": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Of Birth"
+          },
+          "referring_provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referring Provider"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "urgency": {
+            "$ref": "#/components/schemas/Urgency"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReferralStatus",
+            "default": "new"
+          },
+          "duplicate_group_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Group Id"
+          },
+          "possible_duplicate": {
+            "type": "boolean",
+            "title": "Possible Duplicate",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "source_record_id",
+          "received_at",
+          "patient_name",
+          "urgency",
+          "possible_duplicate"
+        ],
+        "title": "Referral"
+      },
+      "ReferralDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ReferralSource"
+          },
+          "source_record_id": {
+            "type": "string",
+            "title": "Source Record Id"
+          },
+          "received_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Received At"
+          },
+          "patient_name": {
+            "$ref": "#/components/schemas/PatientName"
+          },
+          "date_of_birth": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Of Birth"
+          },
+          "referring_provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referring Provider"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "urgency": {
+            "$ref": "#/components/schemas/Urgency"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReferralStatus",
+            "default": "new"
+          },
+          "duplicate_group_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duplicate Group Id"
+          },
+          "duplicate_group": {
+            "items": {
+              "$ref": "#/components/schemas/ReferralSummary"
+            },
+            "type": "array",
+            "title": "Duplicate Group"
+          },
+          "possible_duplicate": {
+            "type": "boolean",
+            "title": "Possible Duplicate",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "source_record_id",
+          "received_at",
+          "patient_name",
+          "urgency",
+          "possible_duplicate"
+        ],
+        "title": "ReferralDetail"
+      },
+      "ReferralDetailResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ReferralDetail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "ReferralDetailResponse"
+      },
+      "ReferralListResponse": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/Referral"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "title": "ReferralListResponse"
+      },
+      "ReferralSource": {
+        "type": "string",
+        "enum": [
+          "efax",
+          "ehr_fhir",
+          "web_form"
+        ],
+        "title": "ReferralSource"
+      },
+      "ReferralStatus": {
+        "type": "string",
+        "enum": [
+          "new",
+          "in_review",
+          "accepted",
+          "rejected",
+          "scheduled"
+        ],
+        "title": "ReferralStatus"
+      },
+      "ReferralSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ReferralSource"
+          },
+          "patient_name": {
+            "type": "string",
+            "title": "Patient Name"
+          },
+          "date_of_birth": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date Of Birth"
+          },
+          "received_at": {
+            "type": "string",
+            "title": "Received At"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReferralStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "source",
+          "patient_name",
+          "received_at",
+          "status"
+        ],
+        "title": "ReferralSummary",
+        "description": "Lightweight referral shape used inside another referral's duplicate group.\n\nDeliberately not the full `Referral` -- embedding full records into each\nother's duplicate group would nest indefinitely for a larger cluster."
+      },
+      "StatusUpdateRequest": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ReferralStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "StatusUpdateRequest"
+      },
+      "StatusUpdateResponse": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Referral"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "StatusUpdateResponse"
+      },
+      "Urgency": {
+        "type": "string",
+        "enum": [
+          "routine",
+          "urgent",
+          "stat"
+        ],
+        "title": "Urgency",
+        "description": "One ordinal scale collapsing three source vocabularies onto it.\n\n- efax:     ROUTINE -> routine, STAT -> stat\n- ehr_fhir: routine -> routine, urgent -> urgent, asap (or stat) -> stat\n- web_form: urgent=False -> routine, urgent=True -> urgent\n            (the boolean can never express `stat` -- a lossy mapping,\n            documented in the README as a duplicate/urgency failure mode)"
+      }
+    }
+  }
+}

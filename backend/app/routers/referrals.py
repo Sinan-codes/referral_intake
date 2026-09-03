@@ -22,6 +22,7 @@ from app.db import (
 )
 from app.models.api import (
     ErrorDetail,
+    ErrorResponse,
     PaginationMeta,
     ReferralDetail,
     ReferralDetailResponse,
@@ -33,7 +34,16 @@ from app.models.api import (
 )
 from app.models.referral import is_valid_transition
 
-router = APIRouter(prefix="/referrals", tags=["referrals"])
+# Every route can 422 on bad query/body input (see main.py's
+# RequestValidationError handler, which reshapes FastAPI's own validation
+# failures into this same envelope) -- declared once here so it shows up in
+# the OpenAPI schema, and therefore in generated types, instead of only
+# being true at runtime.
+router = APIRouter(
+    prefix="/referrals",
+    tags=["referrals"],
+    responses={422: {"model": ErrorResponse, "description": "Validation error"}},
+)
 
 
 def _not_found(referral_id: str) -> HTTPException:
@@ -72,7 +82,11 @@ async def list_referrals_route(
     )
 
 
-@router.get("/{referral_id}", response_model=ReferralDetailResponse)
+@router.get(
+    "/{referral_id}",
+    response_model=ReferralDetailResponse,
+    responses={404: {"model": ErrorResponse, "description": "Referral not found"}},
+)
 async def get_referral_route(referral_id: str, request: Request) -> ReferralDetailResponse:
     conn = request.app.state.db
     referral = get_referral(conn, referral_id)
@@ -100,7 +114,17 @@ async def get_referral_route(referral_id: str, request: Request) -> ReferralDeta
     return ReferralDetailResponse(data=detail)
 
 
-@router.patch("/{referral_id}/status", response_model=StatusUpdateResponse)
+@router.patch(
+    "/{referral_id}/status",
+    response_model=StatusUpdateResponse,
+    responses={
+        404: {"model": ErrorResponse, "description": "Referral not found"},
+        409: {
+            "model": ErrorResponse,
+            "description": "Transition not allowed by the status workflow",
+        },
+    },
+)
 async def update_status_route(
     referral_id: str, body: StatusUpdateRequest, request: Request
 ) -> StatusUpdateResponse:
