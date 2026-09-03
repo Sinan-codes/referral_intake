@@ -5,7 +5,8 @@ import { listReferrals } from '../api/client'
 import { DuplicateBadge, SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
 import { Pagination } from '../components/Pagination'
 import { QueueFilters, type QueueFiltersState } from '../components/QueueFilters'
-import { EmptyState, ErrorState, LoadingState } from '../components/states'
+import { QueueTableSkeleton } from '../components/QueueTableSkeleton'
+import { EmptyState, ErrorState } from '../components/states'
 import { formatDateTime } from '../lib/format'
 import { useDebouncedValue } from '../lib/useDebouncedValue'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
@@ -53,7 +54,7 @@ export function QueuePage() {
 
       <QueueFilters filters={filters} onChange={updateFilters} />
 
-      {isPending && <LoadingState label="Loading referrals…" />}
+      {isPending && <QueueTableSkeleton />}
       {error && <ErrorState error={error} onRetry={() => refetch()} />}
 
       {data && data.data.length === 0 && (
