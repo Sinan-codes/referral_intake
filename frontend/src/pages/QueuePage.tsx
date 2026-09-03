@@ -1,13 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { listReferrals } from '../api/client'
-import { DuplicateBadge, SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
+import { Card } from '../components/Card'
 import { Pagination } from '../components/Pagination'
 import { QueueFilters, type QueueFiltersState } from '../components/QueueFilters'
-import { QueueTableSkeleton } from '../components/QueueTableSkeleton'
+import { QueueTable } from '../components/QueueTable'
 import { EmptyState, ErrorState } from '../components/states'
-import { formatDateTime } from '../lib/format'
 import { useDebouncedValue } from '../lib/useDebouncedValue'
 import { useDocumentTitle } from '../lib/useDocumentTitle'
 
@@ -48,68 +46,32 @@ export function QueuePage() {
     setPage(1)
   }
 
+  const showEmpty = data && data.data.length === 0
+  const showTable = isPending || (data && data.data.length > 0)
+
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold">Queue</h1>
+    <div className="flex flex-col gap-5">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">Queue</p>
+        <h1 className="text-xl font-semibold text-slate-900">Referrals</h1>
+      </div>
 
       <QueueFilters filters={filters} onChange={updateFilters} />
 
-      {isPending && <QueueTableSkeleton />}
       {error && <ErrorState error={error} onRetry={() => refetch()} />}
+      {showEmpty && <EmptyState title="No referrals match" description="Try widening your filters." />}
 
-      {data && data.data.length === 0 && (
-        <EmptyState title="No referrals match" description="Try widening your filters." />
-      )}
-
-      {data && data.data.length > 0 && (
-        <div
-          className={`flex flex-col gap-3 transition-opacity ${isPlaceholderData ? 'opacity-60' : ''}`}
-        >
-          <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Patient</th>
-                  <th className="px-4 py-3 font-medium">Source</th>
-                  <th className="px-4 py-3 font-medium">Urgency</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium">Received</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {data.data.map((referral) => (
-                  <tr key={referral.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3">
-                      <Link
-                        to={`/referrals/${referral.id}`}
-                        className="font-medium text-slate-900 hover:underline"
-                      >
-                        {referral.patient_name.raw_full_name}
-                      </Link>
-                      {referral.possible_duplicate && (
-                        <div className="mt-1">
-                          <DuplicateBadge />
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <SourceBadge source={referral.source} />
-                    </td>
-                    <td className="px-4 py-3">
-                      <UrgencyBadge urgency={referral.urgency} />
-                    </td>
-                    <td className="px-4 py-3">
-                      <StatusBadge status={referral.status} />
-                    </td>
-                    <td className="px-4 py-3 text-slate-500">{formatDateTime(referral.received_at)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {showTable && (
+        <Card className={`transition-opacity ${isPlaceholderData ? 'opacity-60' : ''}`}>
+          <div className="overflow-x-auto">
+            <QueueTable referrals={data?.data ?? []} isLoading={isPending} />
           </div>
-
-          <Pagination meta={data.meta} onPageChange={setPage} />
-        </div>
+          {data && (
+            <div className="border-t border-slate-200 px-4 py-3">
+              <Pagination meta={data.meta} onPageChange={setPage} />
+            </div>
+          )}
+        </Card>
       )}
     </div>
   )

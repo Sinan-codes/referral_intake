@@ -1,4 +1,5 @@
 import type { PaginationMeta } from '../api/types'
+import { Button } from './Button'
 
 export function Pagination({
   meta,
@@ -11,32 +12,28 @@ export function Pagination({
   const end = Math.min(meta.page * meta.page_size, meta.total)
 
   return (
-    <div className="flex items-center justify-between text-sm text-slate-600">
-      <p>
-        {meta.total === 0
-          ? 'No results'
-          : `Showing ${start}–${end} of ${meta.total}`}
+    <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
+      <p className="tabular-nums">
+        {meta.total === 0 ? 'No results' : `Showing ${start}–${end} of ${meta.total}`}
       </p>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
+      <div className="flex items-center gap-3">
+        <Button
+          variant="neutral"
           disabled={meta.page <= 1}
           onClick={() => onPageChange(meta.page - 1)}
-          className="rounded-md border border-slate-300 px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-40 hover:bg-slate-50"
         >
           Previous
-        </button>
+        </Button>
         <span className="tabular-nums">
           Page {meta.page} of {Math.max(meta.total_pages, 1)}
         </span>
-        <button
-          type="button"
+        <Button
+          variant="neutral"
           disabled={meta.page >= meta.total_pages}
           onClick={() => onPageChange(meta.page + 1)}
-          className="rounded-md border border-slate-300 px-2.5 py-1 disabled:cursor-not-allowed disabled:opacity-40 hover:bg-slate-50"
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   )

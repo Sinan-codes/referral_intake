@@ -3,6 +3,17 @@ import { useState } from 'react'
 import { ApiError, updateReferralStatus } from '../api/client'
 import type { Referral, ReferralDetailResponse, ReferralStatus } from '../api/types'
 import { STATUS_LABELS, nextStatuses } from '../lib/statusWorkflow'
+import { Button, type ButtonVariant } from './Button'
+
+// Echoes the color language of StatusBadge: accepting/scheduling reads as
+// progress, rejecting reads as a stop, review is neutral.
+const ACTION_VARIANT: Record<ReferralStatus, ButtonVariant> = {
+  new: 'neutral',
+  in_review: 'neutral',
+  accepted: 'positive',
+  rejected: 'negative',
+  scheduled: 'positive',
+}
 
 /**
  * Renders one button per status the server's workflow allows from the
@@ -37,15 +48,14 @@ export function StatusActions({ referral }: { referral: Referral }) {
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap gap-2">
         {options.map((status) => (
-          <button
+          <Button
             key={status}
-            type="button"
+            variant={ACTION_VARIANT[status]}
             disabled={mutation.isPending}
             onClick={() => mutation.mutate(status)}
-            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Move to {STATUS_LABELS[status]}
-          </button>
+          </Button>
         ))}
       </div>
       {error && <p className="text-sm text-red-700">{error}</p>}

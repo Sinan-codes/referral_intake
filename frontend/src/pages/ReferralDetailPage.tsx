@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useParams } from 'react-router-dom'
 import { ApiError, getReferral } from '../api/client'
-import { SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
+import { DuplicateBadge, SourceBadge, StatusBadge, UrgencyBadge } from '../components/badges'
+import { Card } from '../components/Card'
 import { EmptyState, ErrorState, LoadingState } from '../components/states'
 import { StatusActions } from '../components/StatusActions'
 import { formatDate, formatDateTime } from '../lib/format'
@@ -11,7 +12,7 @@ function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</dt>
-      <dd className="mt-0.5 text-sm text-slate-900">{value}</dd>
+      <dd className="mt-1 text-sm text-slate-900">{value}</dd>
     </div>
   )
 }
@@ -30,9 +31,12 @@ export function ReferralDetailPage() {
   )
 
   return (
-    <div className="flex flex-col gap-4">
-      <Link to="/" className="text-sm text-slate-500 hover:text-slate-700 hover:underline">
-        ← Back to queue
+    <div className="flex flex-col gap-5">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 hover:underline"
+      >
+        <span aria-hidden="true">←</span> Back to queue
       </Link>
 
       {isPending && <LoadingState label="Loading referral…" />}
@@ -46,7 +50,7 @@ export function ReferralDetailPage() {
 
       {data && (
         <div className="flex flex-col gap-6">
-          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+          <Card className="p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h1 className="text-xl font-semibold text-slate-900">
@@ -56,11 +60,12 @@ export function ReferralDetailPage() {
                   <SourceBadge source={data.data.source} />
                   <UrgencyBadge urgency={data.data.urgency} />
                   <StatusBadge status={data.data.status} />
+                  {data.data.possible_duplicate && <DuplicateBadge />}
                 </div>
               </div>
             </div>
 
-            <dl className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <dl className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               <Field
                 label="Date of birth"
                 value={data.data.date_of_birth ? formatDate(data.data.date_of_birth) : 'Unknown'}
@@ -75,13 +80,13 @@ export function ReferralDetailPage() {
               <h2 className="text-xs font-medium uppercase tracking-wide text-slate-500">
                 Update status
               </h2>
-              <div className="mt-2">
+              <div className="mt-3">
                 <StatusActions referral={data.data} />
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="rounded-lg border border-orange-200 bg-orange-50 p-6">
+          <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
             <h2 className="text-sm font-semibold text-orange-900">Possible duplicates</h2>
             {data.data.duplicate_group.length === 0 ? (
               <p className="mt-1 text-sm text-orange-800">None found.</p>
@@ -96,7 +101,9 @@ export function ReferralDetailPage() {
                       <span className="font-medium text-slate-900">{peer.patient_name}</span>
                       <SourceBadge source={peer.source} />
                       <StatusBadge status={peer.status} />
-                      <span className="text-slate-500">{formatDateTime(peer.received_at)}</span>
+                      <span className="ml-auto tabular-nums text-slate-500">
+                        {formatDateTime(peer.received_at)}
+                      </span>
                     </Link>
                   </li>
                 ))}
