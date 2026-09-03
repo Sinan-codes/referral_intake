@@ -140,24 +140,31 @@ export function QueueFilters({
         </select>
       </FilterField>
 
-      <div className="ml-auto flex items-end gap-2">
-        {hasActiveFilters(filters) && (
+      {hasActiveFilters(filters) && (
+        <div className="flex flex-col gap-1">
+          {/* Invisible label spacer -- keeps the button's top edge level
+           * with every labeled control instead of floating below a gap
+           * that only exists here. */}
+          <span aria-hidden="true" className="invisible text-xs font-medium uppercase tracking-wide">
+            Clear
+          </span>
           <Button variant="ghost" onClick={clear}>
             Clear filters
           </Button>
-        )}
-        <FilterField label="Sort by" htmlFor="filter-sort">
-          <select
-            id="filter-sort"
-            value={filters.sort}
-            onChange={(e) => onChange({ ...filters, sort: e.target.value as QueueFiltersState['sort'] })}
-            className={controlClass}
-          >
-            <option value="-received_at">Newest first</option>
-            <option value="received_at">Oldest first</option>
-          </select>
-        </FilterField>
-      </div>
+        </div>
+      )}
+
+      <FilterField label="Sort by" htmlFor="filter-sort" className="ml-auto">
+        <select
+          id="filter-sort"
+          value={filters.sort}
+          onChange={(e) => onChange({ ...filters, sort: e.target.value as QueueFiltersState['sort'] })}
+          className={controlClass}
+        >
+          <option value="-received_at">Newest first</option>
+          <option value="received_at">Oldest first</option>
+        </select>
+      </FilterField>
     </div>
   )
 }
