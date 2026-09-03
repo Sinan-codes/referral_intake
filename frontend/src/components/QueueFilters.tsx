@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { ReferralSource, ReferralStatus, Urgency } from '../api/types'
 import { STATUS_LABELS } from '../lib/statusWorkflow'
 import { Button } from './Button'
@@ -29,6 +30,30 @@ function hasActiveFilters(filters: QueueFiltersState): boolean {
   return filters.status !== '' || filters.source !== '' || filters.urgency !== '' || filters.q !== ''
 }
 
+/** A labeled field group -- every filter gets a visible name above its
+ * control instead of relying on placeholder/default-option text alone,
+ * which also gives each control a real accessible name via `htmlFor`. */
+function FilterField({
+  label,
+  htmlFor,
+  className = '',
+  children,
+}: {
+  label: string
+  htmlFor: string
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <div className={`flex flex-col gap-1 ${className}`}>
+      <label htmlFor={htmlFor} className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        {label}
+      </label>
+      {children}
+    </div>
+  )
+}
+
 export function QueueFilters({
   filters,
   onChange,
@@ -41,84 +66,97 @@ export function QueueFilters({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-      <div className="relative min-w-56 flex-1">
-        <svg
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-          className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-            clipRule="evenodd"
+    <div className="flex flex-wrap items-end gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <FilterField label="Search" htmlFor="filter-search" className="min-w-56 flex-1">
+        <div className="relative">
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <input
+            id="filter-search"
+            type="search"
+            placeholder="Patient name…"
+            value={filters.q}
+            onChange={(e) => onChange({ ...filters, q: e.target.value })}
+            className={`${controlClass} w-full pl-8`}
           />
-        </svg>
-        <input
-          type="search"
-          placeholder="Search patient name…"
-          value={filters.q}
-          onChange={(e) => onChange({ ...filters, q: e.target.value })}
-          className={`${controlClass} w-full pl-8`}
-        />
-      </div>
+        </div>
+      </FilterField>
 
-      <span aria-hidden="true" className="h-6 w-px bg-slate-200" />
+      <FilterField label="Status" htmlFor="filter-status">
+        <select
+          id="filter-status"
+          value={filters.status}
+          onChange={(e) => onChange({ ...filters, status: e.target.value as ReferralStatus | '' })}
+          className={controlClass}
+        >
+          <option value="">All statuses</option>
+          {STATUS_OPTIONS.map((status) => (
+            <option key={status} value={status}>
+              {STATUS_LABELS[status]}
+            </option>
+          ))}
+        </select>
+      </FilterField>
 
-      <select
-        value={filters.status}
-        onChange={(e) => onChange({ ...filters, status: e.target.value as ReferralStatus | '' })}
-        className={controlClass}
-      >
-        <option value="">All statuses</option>
-        {STATUS_OPTIONS.map((status) => (
-          <option key={status} value={status}>
-            {STATUS_LABELS[status]}
-          </option>
-        ))}
-      </select>
+      <FilterField label="Source" htmlFor="filter-source">
+        <select
+          id="filter-source"
+          value={filters.source}
+          onChange={(e) => onChange({ ...filters, source: e.target.value as ReferralSource | '' })}
+          className={controlClass}
+        >
+          <option value="">All sources</option>
+          {SOURCE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </FilterField>
 
-      <select
-        value={filters.source}
-        onChange={(e) => onChange({ ...filters, source: e.target.value as ReferralSource | '' })}
-        className={controlClass}
-      >
-        <option value="">All sources</option>
-        {SOURCE_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <FilterField label="Urgency" htmlFor="filter-urgency">
+        <select
+          id="filter-urgency"
+          value={filters.urgency}
+          onChange={(e) => onChange({ ...filters, urgency: e.target.value as Urgency | '' })}
+          className={controlClass}
+        >
+          <option value="">All urgencies</option>
+          {URGENCY_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </FilterField>
 
-      <select
-        value={filters.urgency}
-        onChange={(e) => onChange({ ...filters, urgency: e.target.value as Urgency | '' })}
-        className={controlClass}
-      >
-        <option value="">All urgencies</option>
-        {URGENCY_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex items-end gap-2">
         {hasActiveFilters(filters) && (
           <Button variant="ghost" onClick={clear}>
             Clear filters
           </Button>
         )}
-        <select
-          value={filters.sort}
-          onChange={(e) => onChange({ ...filters, sort: e.target.value as QueueFiltersState['sort'] })}
-          className={controlClass}
-        >
-          <option value="-received_at">Newest first</option>
-          <option value="received_at">Oldest first</option>
-        </select>
+        <FilterField label="Sort by" htmlFor="filter-sort">
+          <select
+            id="filter-sort"
+            value={filters.sort}
+            onChange={(e) => onChange({ ...filters, sort: e.target.value as QueueFiltersState['sort'] })}
+            className={controlClass}
+          >
+            <option value="-received_at">Newest first</option>
+            <option value="received_at">Oldest first</option>
+          </select>
+        </FilterField>
       </div>
     </div>
   )
