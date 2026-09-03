@@ -88,11 +88,11 @@ export function ReferralDetailPage() {
 
           <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
             <h2 className="text-sm font-semibold text-orange-900">Possible duplicates</h2>
-            {data.data.duplicate_group.length === 0 ? (
+            {(data.data.duplicate_group ?? []).length === 0 ? (
               <p className="mt-1 text-sm text-orange-800">None found.</p>
             ) : (
               <ul className="mt-3 flex flex-col gap-2">
-                {data.data.duplicate_group.map((peer) => (
+                {(data.data.duplicate_group ?? []).map((peer) => (
                   <li key={peer.id}>
                     <Link
                       to={`/referrals/${peer.id}`}

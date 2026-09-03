@@ -1,78 +1,36 @@
 /**
- * Mirrors `backend/app/models/referral.py` and `backend/app/models/api.py`.
+ * Thin aliases over `schema.gen.ts`, generated from the backend's own
+ * OpenAPI schema rather than hand-mirroring `backend/app/models/*.py`.
  *
- * The backend is Python, so these can't be generated from a shared source
- * yet -- api.py is explicitly written as the module an OpenAPI-to-TS
- * generator would point at later. Until then this file is kept in sync by
- * hand against the response shapes those Pydantic models produce.
+ * Regenerate after changing anything in `backend/app/models/api.py` or
+ * `backend/app/routers`:
+ *
+ *   cd backend && uv run python -m scripts.export_openapi
+ *   cd frontend && npm run generate:types
+ *
+ * The rest of the app imports these names from here rather than reaching
+ * into `components["schemas"][...]` directly, so a future switch of
+ * generator/tooling only touches this one file.
  */
+import type { components, operations } from './schema.gen'
 
-export type ReferralSource = 'efax' | 'ehr_fhir' | 'web_form'
+export type ReferralSource = components['schemas']['ReferralSource']
+export type Urgency = components['schemas']['Urgency']
+export type ReferralStatus = components['schemas']['ReferralStatus']
+export type PatientName = components['schemas']['PatientName']
+export type Referral = components['schemas']['Referral']
+export type ReferralSummary = components['schemas']['ReferralSummary']
+export type ReferralDetail = components['schemas']['ReferralDetail']
+export type PaginationMeta = components['schemas']['PaginationMeta']
+export type ReferralListResponse = components['schemas']['ReferralListResponse']
+export type ReferralDetailResponse = components['schemas']['ReferralDetailResponse']
+export type StatusUpdateResponse = components['schemas']['StatusUpdateResponse']
+export type ErrorDetail = components['schemas']['ErrorDetail']
+export type ErrorResponse = components['schemas']['ErrorResponse']
 
-export type Urgency = 'routine' | 'urgent' | 'stat'
-
-export type ReferralStatus = 'new' | 'in_review' | 'accepted' | 'rejected' | 'scheduled'
-
-export interface PatientName {
-  raw_full_name: string
-  first_name: string | null
-  last_name: string | null
-}
-
-export interface Referral {
-  id: string
-  source: ReferralSource
-  source_record_id: string
-  received_at: string
-  patient_name: PatientName
-  date_of_birth: string | null
-  referring_provider: string | null
-  reason: string | null
-  urgency: Urgency
-  status: ReferralStatus
-  duplicate_group_id: string | null
-  possible_duplicate: boolean
-}
-
-export interface ReferralSummary {
-  id: string
-  source: ReferralSource
-  patient_name: string
-  date_of_birth: string | null
-  received_at: string
-  status: ReferralStatus
-}
-
-export interface ReferralDetail extends Referral {
-  duplicate_group: ReferralSummary[]
-}
-
-export interface PaginationMeta {
-  page: number
-  page_size: number
-  total: number
-  total_pages: number
-}
-
-export interface ReferralListResponse {
-  data: Referral[]
-  meta: PaginationMeta
-}
-
-export interface ReferralDetailResponse {
-  data: ReferralDetail
-}
-
-export interface StatusUpdateResponse {
-  data: Referral
-}
-
-export interface ErrorDetail {
-  code: string
-  message: string
-  field: string | null
-}
-
-export interface ErrorResponse {
-  error: ErrorDetail
-}
+/** Query params for `GET /referrals`, straight from the operation's own
+ * generated parameter type -- so the sort literal and filter enums stay
+ * tied to the backend's actual `ReferralListQuery`. */
+export type ReferralListQuery = NonNullable<
+  operations['list_referrals_route_referrals_get']['parameters']['query']
+>

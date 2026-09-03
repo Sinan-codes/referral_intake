@@ -1,11 +1,10 @@
 import type {
   ErrorResponse,
   ReferralDetailResponse,
+  ReferralListQuery,
   ReferralListResponse,
-  ReferralSource,
   ReferralStatus,
   StatusUpdateResponse,
-  Urgency,
 } from './types'
 
 /** Thrown for any non-2xx response, carrying the server's error envelope. */
@@ -19,7 +18,7 @@ export class ApiError extends Error {
     this.name = 'ApiError'
     this.status = status
     this.code = error.code
-    this.field = error.field
+    this.field = error.field ?? null
   }
 }
 
@@ -38,26 +37,16 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
-export interface ReferralListParams {
-  status?: ReferralStatus
-  source?: ReferralSource
-  urgency?: Urgency
-  q?: string
-  sort?: '-received_at' | 'received_at'
-  page?: number
-  page_size?: number
-}
-
-function toSearchParams(params: ReferralListParams): string {
+function toSearchParams(params: ReferralListQuery): string {
   const search = new URLSearchParams()
   for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== '') search.set(key, String(value))
+    if (value !== undefined && value !== null && value !== '') search.set(key, String(value))
   }
   const qs = search.toString()
   return qs ? `?${qs}` : ''
 }
 
-export function listReferrals(params: ReferralListParams): Promise<ReferralListResponse> {
+export function listReferrals(params: ReferralListQuery): Promise<ReferralListResponse> {
   return request(`/referrals${toSearchParams(params)}`)
 }
 
