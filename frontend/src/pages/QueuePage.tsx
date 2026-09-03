@@ -58,6 +58,13 @@ export function QueuePage() {
 
       <QueueFilters filters={filters} onChange={updateFilters} />
 
+      {data && (
+        <p className={`text-sm text-slate-500 ${isPlaceholderData ? 'opacity-60' : ''}`}>
+          <span className="font-medium text-slate-900">{data.meta.total}</span>{' '}
+          {data.meta.total === 1 ? 'referral' : 'referrals'} found
+        </p>
+      )}
+
       {error && <ErrorState error={error} onRetry={() => refetch()} />}
       {showEmpty && <EmptyState title="No referrals match" description="Try widening your filters." />}
 
