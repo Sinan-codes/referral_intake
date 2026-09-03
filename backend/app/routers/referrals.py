@@ -105,6 +105,9 @@ async def get_referral_route(referral_id: str, request: Request) -> ReferralDeta
                 patient_name=peer.patient_name.raw_full_name,
                 date_of_birth=peer.date_of_birth.isoformat() if peer.date_of_birth else None,
                 received_at=peer.received_at.isoformat(),
+                referring_provider=peer.referring_provider,
+                reason=peer.reason,
+                urgency=peer.urgency,
                 status=peer.status,
             )
             for peer in peers

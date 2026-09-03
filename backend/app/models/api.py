@@ -24,6 +24,10 @@ class ReferralSummary(BaseModel):
 
     Deliberately not the full `Referral` -- embedding full records into each
     other's duplicate group would nest indefinitely for a larger cluster.
+    Carries every field the frontend's duplicate comparison table needs to
+    judge whether a match is real (urgency/provider/reason alongside the
+    demographics), but not `duplicate_group_id`/`possible_duplicate` --
+    those describe the peer's own membership, not this referral's.
     """
 
     id: str
@@ -31,6 +35,9 @@ class ReferralSummary(BaseModel):
     patient_name: str
     date_of_birth: str | None = None
     received_at: str
+    referring_provider: str | None = None
+    reason: str | None = None
+    urgency: Urgency
     status: ReferralStatus
 
 

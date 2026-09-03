@@ -76,6 +76,18 @@ class TestGetReferral:
         assert response.status_code == 200
         assert "duplicate_group" in response.json()["data"]
 
+    def test_duplicate_group_entries_carry_enough_to_compare(self, client):
+        # Comparing two possibly-duplicate referrals needs more than just
+        # name/DOB/status -- pull a referral known to have a match and check
+        # its peer carries urgency/provider/reason too.
+        listing = client.get("/referrals", params={"page_size": 100}).json()
+        flagged = next(r for r in listing["data"] if r["possible_duplicate"])
+
+        response = client.get(f"/referrals/{flagged['id']}")
+
+        peer = response.json()["data"]["duplicate_group"][0]
+        assert {"urgency", "referring_provider", "reason"} <= peer.keys()
+
     def test_get_missing_referral_returns_enveloped_404(self, client):
         response = client.get("/referrals/does_not:exist")
 

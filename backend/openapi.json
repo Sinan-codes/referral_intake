@@ -656,6 +656,31 @@
             "type": "string",
             "title": "Received At"
           },
+          "referring_provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Referring Provider"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "urgency": {
+            "$ref": "#/components/schemas/Urgency"
+          },
           "status": {
             "$ref": "#/components/schemas/ReferralStatus"
           }
@@ -666,10 +691,11 @@
           "source",
           "patient_name",
           "received_at",
+          "urgency",
           "status"
         ],
         "title": "ReferralSummary",
-        "description": "Lightweight referral shape used inside another referral's duplicate group.\n\nDeliberately not the full `Referral` -- embedding full records into each\nother's duplicate group would nest indefinitely for a larger cluster."
+        "description": "Lightweight referral shape used inside another referral's duplicate group.\n\nDeliberately not the full `Referral` -- embedding full records into each\nother's duplicate group would nest indefinitely for a larger cluster.\nCarries every field the frontend's duplicate comparison table needs to\njudge whether a match is real (urgency/provider/reason alongside the\ndemographics), but not `duplicate_group_id`/`possible_duplicate` --\nthose describe the peer's own membership, not this referral's."
       },
       "StatusUpdateRequest": {
         "properties": {
